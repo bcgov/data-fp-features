@@ -91,17 +91,17 @@ mainSvg {
 
 </style>
 <body>
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
-<script src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
 <!-- Latest compiled and minified JavaScript -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
 
 <link rel="stylesheet" href="main.css"> 
 
@@ -136,7 +136,7 @@ mainSvg {
 
 <div id="chart_container">
     <div id="chart"></div>
-    <p>Powered by Ministry of Education, Analysis and Reporting <a target="_parent" href="https://catalogue.data.gov.bc.ca/dataset/bc-schools-grade-to-grade-transition">data</a> <p>
+    <p>Powered by Ministry of Education, Analysis and Reporting <a target="_parent" href="//catalogue.data.gov.bc.ca/dataset/bc-schools-grade-to-grade-transition">data</a> <p>
 </div>
 <div id="slider"></div>
 
@@ -268,7 +268,7 @@ var handle = slider.append("circle")
     .attr("r", 9);
 
 $.ajax({
-    url: 'https://cat.data.gov.bc.ca/api/action/datastore_search',
+    url: '//cat.data.gov.bc.ca/api/action/datastore_search',
     data: data,
     success: function(data) {
         alldat = data.result.records
