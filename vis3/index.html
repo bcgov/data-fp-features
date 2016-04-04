@@ -71,8 +71,13 @@ $.ajax({
         alldat = data['result']['records']
         // console.log(alldat)
         for (i = 0; i < alldat.length; i++) {
-            // console.log(alldat[i]['organization'])
+          if (alldat[i]['record_number']==0){
+            console.log(alldat[i]['record_number'])
+            delete alldat[i]
+          } else{
+            console.log(alldat[i])
         dat[alldat[i]['organization']] = alldat[i]['record_number']
+    }
     }
     }
 })
@@ -115,6 +120,7 @@ $.ajax({
         // console.log(dat[org])
     dat[org] = Number(dat[org]);
     if (dat[org] < 0) {
+      console.log(dat[org] )
       nodes.push({
         organization: org,
         recNum: dat[org],
