@@ -1,2 +1,2 @@
 # data-fp-features
-carousel content for data-fp
+carousel content for data-fp.
