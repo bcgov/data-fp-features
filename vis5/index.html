@@ -73,7 +73,12 @@ p {
 <script>
 
 var alldat
-var margin = {top: 20, right: 20, bottom: 30, left: 80},
+var margin = {
+        top: 20,
+        right: 20,
+        bottom: 30,
+        left: 80
+    },
     width = 860 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 
@@ -81,7 +86,7 @@ var x = d3.scale.ordinal()
     .rangeRoundBands([0, width], .1);
 
 var y = d3.scale.linear()
-    .rangeRound([height, 0]);
+    .range([height, 0]);
 
 var color = d3.scale.ordinal()
     .range(["steelblue"]);
@@ -92,17 +97,18 @@ var tickform = d3.time.format("%Y-%m");
 var xAxis = d3.svg.axis()
     .scale(x)
     .orient("bottom")
-    .tickFormat(function(d,i) {
-        if (i%2 == 0){
+    .tickFormat(function(d, i) {
+        if (i % 2 == 0) {
             return tickform(d)
         }
-        console.log(d)
+        // console.log(d)
     })
     // {d3.time.format("%y-%m"));
 
 var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left")
+    // .ticks(11)
     .tickFormat(d3.format(".2s"));
 
 
@@ -110,11 +116,11 @@ var yAxis = d3.svg.axis()
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
-  .append("g")
+    .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 var data = {
-    resource_id: '1a7df2c1-f7df-46f1-a920-da85c04eeab6', // 
+    resource_id: 'e0d0e432-0f86-4db9-8ea7-5a4e002c5c0f', // 
 };
 
 
@@ -122,117 +128,118 @@ var data = {
 
 $.ajax({
     // async: false,
-    url: 'https://cat.data.gov.bc.ca/api/action/datastore_search',
+    url: 'https://catalogue.data.gov.bc.ca/api/action/datastore_search',
     data: data,
     success: function(data) {
-      
+
         alldat = data['result']['records']
-        console.log(alldat)
+            // console.log(alldat)
         alldat.forEach(function(d) {
             // console.log(d.month)
-         d.month = parseDate(d.month.slice(0,7))
-         d.start_from = []
-    });
+            d.month = parseDate(d.month.slice(0, 7))
+            d.start_from = []
+        });
 
 
 
-  x.domain(alldat.map(function(d) {
-    return d.month; }));
-  y.domain([0, d3.max(alldat, function(d) { return d.Downloads; })]);
+        x.domain(alldat.map(function(d) {
+            return d.month;
+        }));
 
-  svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis)
-      .selectAll("text")
-      // .style("text-anchor", "end")
-      // .attr("dx", "-.8em")
-      // .attr("dy", "-.55em")
-      // .attr("transform", "rotate(-45)" );
+        y.domain([0,10000])
 
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis);
-    // .append("text")
-    //   .attr("transform", "rotate(-90)")
-    //   .attr("y", -50)
-    //   .attr("dy", ".71em")
-    //   .style("text-anchor", "end")
-    //   .text("Resourcs Downloaded");
+        // y.domain([0, d3.max(alldat, function(d) {
+        //     // console.log(d.Downloads)
+        //     return d.Downloads;
+        // })]);
 
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis)
+            .selectAll("text")
+            // .style("text-anchor", "end")
+            // .attr("dx", "-.8em")
+            // .attr("dy", "-.55em")
+            // .attr("transform", "rotate(-45)" );
 
-    svg.selectAll(".bar")
-      .data(alldat)
-    .enter().append("rect")
-      .attr("class", "bar")
-      // .attr("transform", function(d) { return "translate(" + x(d.month) + ",0)"; })
-      .attr("width", x.rangeBand())
-      .attr("x", function(d) { 
-        return x(d.month) })
-      .attr("y", function(d) { return y(d.start_from); })
-      .attr("height", function(d) { return height - y(d.start_from); })
-      .on("mouseover", function(d) {
-
-        var xPosition = parseFloat(d3.select(this).attr("x")) + x.rangeBand() / .5;
-        var yPosition = parseFloat(d3.select(this).attr("y")) / 2 + height / 2;
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis);
+        // .append("text")
+        //   .attr("transform", "rotate(-90)")
+        //   .attr("y", -50)
+        //   .attr("dy", ".71em")
+        //   .style("text-anchor", "end")
+        //   .text("Resourcs Downloaded");
 
 
-        d3.select("#tooltip")
-          .style("left", xPosition  + "px")
-          .style("top", yPosition + "px")
-          .text(d.Downloads);
+        svg.selectAll(".bar")
+            .data(alldat)
+            .enter().append("rect")
+            .attr("class", "bar")
+            // .attr("transform", function(d) { return "translate(" + x(d.month) + ",0)"; })
+            .attr("width", x.rangeBand())
+            .attr("x", function(d) {
+                return x(d.month)
+            })
+            .attr("y", function(d) {
+                return y(d.start_from);
+            })
+            .attr("height", function(d) {
+                return height - y(d.start_from);
+            })
+            .on("mouseover", function(d) {
 
-        //Show the tooltip
-        d3.select("#tooltip").classed("hidden", false);
-
-        })
-      .on("mouseout", function() {
-
-        //Hide the tooltip
-        d3.select("#tooltip").classed("hidden", true);
-
-        })
+                var xPosition = parseFloat(d3.select(this).attr("x")) + x.rangeBand() / .5;
+                var yPosition = parseFloat(d3.select(this).attr("y")) / 2 + height / 2;
 
 
-  var legend = svg.selectAll(".legend")
-      .data(color.domain().slice().reverse())
-    .enter().append("g")
-      .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+                d3.select("#tooltip")
+                    .style("left", xPosition + "px")
+                    .style("top", yPosition + "px")
+                    .text(d.Downloads);
 
-  svg.selectAll(".bar")
-    .data(alldat)
-    .transition()
-    .delay(function(d,i){
-        return i /alldat.length * 1000;
-    })
-    .duration(500)
-    .attr("x", function(d) { 
-        return x(d.month) })
-    .attr("y", function(d) { return y(d.Downloads); })
-    .attr("height", function(d) { return height - y(d.Downloads); });
+                //Show the tooltip
+                d3.select("#tooltip").classed("hidden", false);
+
+            })
+            .on("mouseout", function() {
+
+                //Hide the tooltip
+                d3.select("#tooltip").classed("hidden", true);
+
+            })
+
+
+        var legend = svg.selectAll(".legend")
+            .data(color.domain().slice().reverse())
+            .enter().append("g")
+            .attr("class", "legend")
+            .attr("transform", function(d, i) {
+                return "translate(0," + i * 20 + ")";
+            });
+
+        svg.selectAll(".bar")
+            .data(alldat)
+            .transition()
+            .delay(function(d, i) {
+                return i / alldat.length * 1000;
+            })
+            .duration(500)
+            .attr("x", function(d) {
+                return x(d.month)
+            })
+            .attr("y", function(d) {
+                return y(d.Downloads);
+            })
+            .attr("height", function(d) {
+                return height - y(d.Downloads);
+            });
 
     }
 });
 
 
-
-
-// d3.csv("downloads.csv", function(error, data) {
-//   if (error) throw error;
-
-  // color.domain(d3.keys(data[0]).filter(function(key) { return key !== "month"; }));
-
-  // data.forEach(function(d) {
-  //   var y0 = 0;
-  //   d.ages = color.domain().map(function(name) { return {name: name, y0: y0, y1: y0 += +d[name]}; });
-  //   d.total = d.ages[d.ages.length - 1].y1;
-  // });
-
-  // data.sort(function(a, b) { return b.total - a.total; });
-
-
-// });
-
 </script>
-<p>Powered by Enterprise Data Services <a target="_parent" href="https://cat.data.gov.bc.ca/dataset/bc-data-catalogue-content/resource/1a7df2c1-f7df-46f1-a920-da85c04eeab6">data</a> <p>
+<p>Powered by Enterprise Data Services <a target="_parent" href="https://catalogue.data.gov.bc.ca/dataset/bc-data-catalogue-content">data</a> <p>

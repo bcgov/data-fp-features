@@ -31,6 +31,13 @@ div.tooltip {
   line-height: 20px;
 }
 
+#attribution {
+   position: absolute;
+  top: 460px;
+/*  left: 590px;
+  width: 340px;*/
+}
+
 </style>
 <body>
 <!-- <h1>Number of Catalogue Records by Organization</h1> -->
@@ -44,7 +51,7 @@ var width = 860,
     height = 540,
     padding = 1.5, // separation between same-color nodes
     clusterPadding = 6, // separation between different-color nodes
-    maxRadius = 7;
+    maxRadius = 6.6;
 
 var format = d3.format(",d");
 
@@ -59,59 +66,29 @@ var dat ={}
 
 
 var data = {
-    resource_id: '947d81cc-5967-4392-b217-b5dbeafd0cc7', // 
+    resource_id: '1145c623-ff97-4383-adf5-2a12e9020ce7', // 
 };
 
 
 $.ajax({
     async: false,
-    url: 'https://cat.data.gov.bc.ca/api/action/datastore_search',
+    url: 'https://catalogue.data.gov.bc.ca/api/action/datastore_search',
     data: data,
     success: function(data) {
         alldat = data['result']['records']
         // console.log(alldat)
         for (i = 0; i < alldat.length; i++) {
           if (alldat[i]['record_number']==0){
-            console.log(alldat[i]['record_number'])
+            // console.log(alldat[i]['record_number'])
             delete alldat[i]
           } else{
-            console.log(alldat[i])
+            // console.log(alldat[i])
         dat[alldat[i]['organization']] = alldat[i]['record_number']
     }
     }
     }
 })
 
-// con
-// dat.sort(function(a, b) {
-//             return a[1] - b[1];
-//         });
-
-// $.ajax({
-//     async: false,
-//     url: '//api.gov.bc.ca/bcdc/3/action/organization_list_related?all_fields=1',
-//     success: function(data) {
-//       // dat = data['result']
-//       // console.log(data['result'])
-
-//         for (i = 0; i < data.result.length; i++) {
-//             if (data.result[i]['child_of'] !=''){
-//                 // if org exists add to package value
-//                 if(data.result[i]['child_of'][0]['title'] in dat){
-
-//                     dat[data.result[i]['child_of'][0]['title']] += data.result[i]['packages']
-//                 } else { // if new parent org, add to org list and add package # of child
-//                     counter += 1
-//                     dat[data.result[i]['child_of'][0]['title']] = data.result[i]['packages']
-//                 }
-//                 // orgs[data.result[i]['title']] = data.result[i]['packages']
-//             }
-            
-//         }
-//         console.log(dat)
-//         // dat = orgs
-//     }
-// })
 
 
   var nodes = [];
@@ -132,7 +109,7 @@ $.ajax({
         organization: org,
         recNum: dat[org],
         cluster: 2,
-        radius: Math.sqrt((dat[org] +20)) /2* maxRadius
+        radius: Math.sqrt((dat[org] +14)) /2* maxRadius
         });
     };
   };
@@ -252,7 +229,7 @@ node.transition()
 //     win.focus();
 // }
 function capitalizeFirstLet(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+    return string.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }
 
 
@@ -322,7 +299,13 @@ function collide(alpha) {
     });
   };
 }
+d3.select("body")
+    .append("p")
+    .html('Powered by Enterprise Data Services<a target="_parent" href= //catalogue.data.gov.bc.ca/dataset/bc-data-catalogue-content> data</a>'
+                )
+    .attr("id", "attribution");
 
 </script>
 </div>
+<!--  <p>Powered by Ministry of Education, Analysis and Reporting <a target="_parent" href="//catalogue.data.gov.bc.ca/dataset/bc-data-catalogue-content">data</a> <p> -->
 <!-- <p>Powered by a DataBC <a href="https://cat.data.gov.bc.ca/dataset/bc-data-catalogue-content">dataset</a> <p> -->

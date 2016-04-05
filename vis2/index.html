@@ -84,7 +84,7 @@ mainSvg {
 
 .g-summary {
   position: absolute;
-  top: 340px;
+  top: 410px;
   left: 590px;
   width: 340px;
 }
@@ -105,7 +105,7 @@ mainSvg {
 
 <link rel="stylesheet" href="main.css"> 
 
-<h1>BC Schools Grade-to-Grade Transition</h1>
+<!-- <h1>BC Schools Grade-to-Grade Transition</h1> -->
 
 
 <b>See how </b>
@@ -162,7 +162,7 @@ var margin = {
         left: 70
     },
     width = 860 - margin.left - margin.right,
-    height = 340 - margin.top - margin.bottom;
+    height = 400 - margin.top - margin.bottom;
 
 var x = d3.time.scale()
     .range([0, width]);
@@ -222,6 +222,7 @@ sliderContainer.append("g")
     .attr("class", "halo");
 
 sliderContainer.call(xAxis1)
+
 var data = {
     resource_id: '3f3edd3f-70e8-445d-8d4b-bfa1a76db4a2', // the resource id
     limit: 3000
