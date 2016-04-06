@@ -223,10 +223,7 @@ sliderContainer.append("g")
 
 sliderContainer.call(xAxis1)
 
-var data = {
-    resource_id: '3f3edd3f-70e8-445d-8d4b-bfa1a76db4a2', // the resource id
-    limit: 3000
-};
+
 
 var x = d3.time.scale()
     .range([0, width]);
@@ -257,6 +254,7 @@ var svg = d3.select("#chart").append("svg")
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
 var slider = sliderContainer.append("g")
     .attr("class", "g-slider")
     .call(brush);
@@ -268,8 +266,13 @@ var handle = slider.append("circle")
     .attr("transform", "translate(0," + sliderHeight / 2 + ")")
     .attr("r", 9);
 
+var data = {
+    resource_id: 'bca62da0-936b-450d-a8a8-7b70231aa225', // the resource id
+    limit: 3000
+};
+
 $.ajax({
-    url: '//cat.data.gov.bc.ca/api/action/datastore_search',
+    url: '//catalogue.data.gov.bc.ca/api/action/datastore_search',
     data: data,
     success: function(data) {
         alldat = data.result.records
