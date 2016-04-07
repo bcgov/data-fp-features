@@ -1,6 +1,5 @@
 BC Schools Grade-to-Grade Transition Visualization
 ==================================================
-![Alt Text](https://github.com/{user}/{repo}/raw/master/path/to/image.gif)
 
 
 This data visualization was built to support the exploration of the [BC Ministry of Education's Grade-to-Grade Transition data  ](https://catalogue.data.gov.bc.ca/dataset/bc-schools-grade-to-grade-transition). This dataset and many more are available through the provincial [BC Data Catalogue](https://catalogue.data.gov.bc.ca/).
