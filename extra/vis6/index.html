@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+/*body {
+  font: 10px sans-serif;
+}*/
+
+text {
+  font: 16px "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: steelblue;
+}
+
+.x.axis path {
+  display: none;
+}
+
+</style>
+<body>
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+<div class='container'>
+    <div class="chart"></div>
+    </svg>
+</div>
+
+<script>
+
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = 860 - margin.left - margin.right,
+    height = 460 - margin.top - margin.bottom;
+
+var x0 = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1);
+
+var x1 = d3.scale.ordinal();
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var color = d3.scale.ordinal()
+    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S").parse;
+var formatTime = d3.time.format("%Y-%m");
+
+
+var xAxis = d3.svg.axis()
+    .scale(x0)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .tickFormat(d3.format(".2s"));
+
+var svg = d3.select(".chart").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var data = {
+    resource_id: '099288eb-4a09-43eb-8dc2-72586808f70f', // the resource id
+    fields: 'trans_period,no_lt1M_foreign,no_gt1M_foreign,no_gt3M_foreign'
+};
+
+  var tooltip1 = d3.select(".chart")
+      .append("div")
+      .style("position", "absolute")
+      .style("z-index", "10")
+      .style("visibility", "hidden")
+      .style("color", "#222")
+      .style("padding", "8px")
+      .style("background-color", "white")
+      .style("border-radius", "6px")
+      .style("font", "14 px sans-serif")
+      .text("tooltip1");
+
+var newDat=[]
+
+var columns = ['no_lt1M_foreign', 'no_gt1M_foreign', 'no_gt3M_foreign'];     
+
+$.ajax({
+    url: 'https://catalogue.data.gov.bc.ca/api/action/datastore_search',
+    data: data,
+    dataType: 'json',
+    success: function(data) {
+        data = data.result.records;
+        // console.log(data)
+        data.forEach(function(d){
+          // console.log(d)
+          newDat.push(d['trans_period'])
+        })
+        console.log(newDat)
+
+        // for (j=0; j < 5; j++){
+            
+        //     type(data.result.records[j],j,columns)
+        // }
+        
+  
+
+  var ageNames = d3.keys(data[0]).filter(function(key) { return key !== "trans_period"; });
+
+  data.forEach(function(d) {
+    d.ages = ageNames.map(function(name) { return {name: name, value: +d[name]}; });
+  });
+
+  x0.domain(data.map(function(d) { return formatTime(parseDate(d.trans_period)); }));
+  x1.domain(ageNames).rangeRoundBands([0, x0.rangeBand()]);
+  y.domain([0, d3.max(data, function(d) { return d3.max(d.ages, function(d) { return d.value; }); })]);
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      // .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      // .attr("x", 2)
+      .attr("dy", "-0.75em")
+      .style("text-anchor", "start")
+      .text("Number of Foreign Involvement Transactions");
+
+  var month = svg.selectAll(".month")
+      .data(data)
+    .enter().append("g")
+      .attr("class", "month")
+      .attr("transform", function(d) { return "translate(" + x0(formatTime(parseDate(d.trans_period))) + ",0)"; });
+
+  month.selectAll("rect")
+      .data(function(d) { return d.ages; })
+    .enter().append("rect")
+      .attr("width", x1.rangeBand())
+      .attr("x", function(d) { return x1(d.name); })
+      .attr("y", function(d) { return y(d.value); })
+      .attr("height", function(d) { return height - y(d.value); })
+      .style("fill", function(d) { return color(d.name); })
+      .on("mouseover", function(d) {
+            console.log(d)
+            d3.select(this)
+                // .style("fill", "orange");
+
+
+            tooltip1.text(d['value'])
+            tooltip1.style("visibility", "visible");
+
+        })
+        .on("mousemove", function() {
+            return tooltip1.style("left", (d3.event.pageX ) + "px")
+                .style("top", (d3.event.pageY - 50) + "px");
+        })
+        .on("mouseout", function() {
+            d3.select(this)
+                // .style("fill", "steelblue");
+
+            return tooltip1.style("visibility", "hidden");
+        });
+
+  var legend = svg.selectAll(".legend")
+      .data(ageNames.slice().reverse())
+    .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  legend.append("rect")
+      .attr("x", width - 18)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", color);
+
+  legend.append("text")
+      .attr("x", width - 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .text(function(d) {
+        if(d == 'no_gt3M_foreign'){
+                d = 'Properties Over $3 million '
+            }else if (d == 'no_gt1M_foreign'){
+                d = '$1 million - $3 million '
+            }else{
+              d = 'Under $1 million'
+            }
+       return d; 
+     });
+
+}
+});
+
+</script>
