@@ -9,6 +9,18 @@
 /*.axis path {
   display: none;
 }*/
+  body, html {
+    width:99%;
+    height:95%;
+  }
+  #vizcontainer {
+    width:100%;
+    height:100%;
+  }
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 .axis--x path {
   display: none;
 }
@@ -17,45 +29,36 @@ text {
 
 }
 
+
 </style>
 <body>
-
-<!-- <svg width="860" height="460"></svg> -->
+<div id="vizcontainer">
+<svg></svg>
+</div>
 <script src="//d3js.org/d3.v4.min.js"></script>
 <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<!-- <div id="chart"></div> -->
-<div class='container'>
-    <svg class='chart' width="860" height="460">
-    </svg>
-</div>
 <script>
-// var width="860" 
-// var height="460"
-
-
-var    margin = {
-        top: 60,
+var svg = d3.select("svg").style("width", "90%").style("height", "100%");
+var margin = {
+        top: 20,
         right: 20,
         bottom: 30,
         left: 40
-    }
-var chart = d3.select(".chart")
-    // .attr("width", width + margin.left + margin.right)
-    // .attr("height", height + margin.top + margin.bottom)   
-    width = +chart.attr("width") - margin.left - margin.right,
-    height = +chart.attr("height") - margin.top - margin.bottom,
-    g = chart.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    },
+    screenHeight = parseFloat(d3.select("svg").node().clientHeight || d3.select("svg").node().parentNode.clientHeight);
+    screenWidth = parseFloat(d3.select("svg").node().clientWidth || d3.select("svg").node().parentNode.clientWidth);
+    // width = +svg.attr("width") - margin.left - margin.right,
+    // height = +svg.attr("height") - margin.top - margin.bottom,
+    g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 var x = d3.scaleBand()
-    .rangeRound([0, width])
+    .rangeRound([0, screenWidth])
     .padding(0.1)
     .align(0.1);
 
 var y = d3.scaleLinear()
-    .rangeRound([height, 0]);
+    .rangeRound([screenHeight-50, 40]);
 
 var z = d3.scaleOrdinal()
     .range(["#98abc5", "#ff8c00"]);
@@ -117,11 +120,8 @@ $.ajax({
     y.domain([0, d3.max(data, function(d) {
         // console.log(d.no_mkt_trans)
         return d.no_mkt_trans;
-    }
-    )
-    ]).nice();
-
-    console.log(columns.slice(0))
+    })]).nice();
+    // console.log(columns.slice(0))
 
     z.domain(columns.slice(1));
 
@@ -141,14 +141,13 @@ $.ajax({
             return x(d.data.trans_period);
         })
         .attr("y", function(d) {
-            // console.log(d[1])
+            // console.log(d)
             return y(d[1]);
         })
         .attr("height", function(d) {
-            // return height - y(d[])
             return y(d[0]) - y(d[1]);
         })
-        .attr("width", x.bandwidth())
+        .attr("width", x.bandwidth()-20)
         .on("mouseover", function(d) {
             // console.log(d.data)
             d3.select(this)
@@ -172,17 +171,15 @@ $.ajax({
 
     g.append("g")
         .attr("class", "axis axis--x")
-        .attr("transform", "translate(0," + height + ")")
+        .attr("transform", "translate(0," + (screenHeight -50)  + ")")
         .call(d3.axisBottom(x));
-
-// var yAxis = d3.axisLeft(y);
 
     g.append("g")
         .attr("class", "axis axis--y")
         .call(d3.axisLeft(y).ticks(6, "s"))
         .append("text")
         .attr("x", 2)
-        .attr("y", y(y.ticks(6).pop()))
+        .attr("y", y(y.ticks(10).pop()))
         .attr("dy", "-0.35em")
         .attr("text-anchor", "start")
         .attr("fill", "#000")
@@ -198,13 +195,13 @@ $.ajax({
         .style("font", "16px sans-serif");
 
     legend.append("rect")
-        .attr("x", width - 18)
+        .attr("x", screenWidth - 80)
         .attr("width", 18)
         .attr("height", 18)
         .attr("fill", z);
 
     legend.append("text")
-        .attr("x", width - 24)
+        .attr("x", screenWidth - 90)
         .attr("y", 9)
         .attr("dy", ".35em")
         .attr("text-anchor", "end")
@@ -218,16 +215,6 @@ $.ajax({
         });
         }
     });
-
-// function type(d, i, columns) { //i=row #, columns headers
-//     // console.log(i)
-
-//     for (i = 0, t = 0; i < columns.length; ++i) t += d[columns[i]] = +d[columns[i]];
-//     d.total = t;
-//     // console.log(d)
-//     return d;
-// }
-
 var format = d3.format(",") ;
 
 </script>
