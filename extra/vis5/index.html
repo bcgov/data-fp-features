@@ -121,7 +121,7 @@ $.ajax({
         // console.log(d.no_mkt_trans)
         return d.no_mkt_trans;
     })]).nice();
-    console.log(columns.slice(0))
+    // console.log(columns.slice(0))
 
     z.domain(columns.slice(1));
 
@@ -141,7 +141,7 @@ $.ajax({
             return x(d.data.trans_period);
         })
         .attr("y", function(d) {
-            console.log(d)
+            // console.log(d)
             return y(d[1]);
         })
         .attr("height", function(d) {
@@ -149,7 +149,7 @@ $.ajax({
         })
         .attr("width", x.bandwidth()-20)
         .on("mouseover", function(d) {
-            console.log(d.data)
+            // console.log(d.data)
             d3.select(this)
                 // .style("fill", "orange");
 
