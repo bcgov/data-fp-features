@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+
 <style>
 
 /*.bar {
@@ -10,17 +12,17 @@
   display: none;
 }*/
   body, html {
-    width:99%;
+    width:98%;
     height:95%;
   }
   #vizcontainer {
     width:100%;
     height:100%;
   }
-  svg {
+/*  svg {
     width: 100%;
     height: 100%;
-  }
+  }*/
 .axis--x path {
   display: none;
 }
@@ -39,18 +41,18 @@ text {
 <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 <script>
-var svg = d3.select("svg").style("width", "90%").style("height", "100%");
+var svg = d3.select("svg").style("width", "100%").style("height", "100%");
 var margin = {
         top: 20,
-        right: 20,
+        right:40,
         bottom: 30,
         left: 40
     },
     screenHeight = parseFloat(d3.select("svg").node().clientHeight || d3.select("svg").node().parentNode.clientHeight);
     screenWidth = parseFloat(d3.select("svg").node().clientWidth || d3.select("svg").node().parentNode.clientWidth);
-    // width = +svg.attr("width") - margin.left - margin.right,
-    // height = +svg.attr("height") - margin.top - margin.bottom,
-    g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+// width = +svg.attr("width") - margin.left - margin.right,
+// height = +svg.attr("height") - margin.top - margin.bottom,
+g = svg.append("g").attr("transform", "translate(" + margin.left  + "," + margin.top + ")");
 
 var x = d3.scaleBand()
     .rangeRound([0, screenWidth])
@@ -58,7 +60,7 @@ var x = d3.scaleBand()
     .align(0.1);
 
 var y = d3.scaleLinear()
-    .rangeRound([screenHeight-50, 40]);
+    .rangeRound([screenHeight - 50, 40]);
 
 var z = d3.scaleOrdinal()
     .range(["#98abc5", "#ff8c00"]);
@@ -67,66 +69,116 @@ var stack = d3.stack()
     .order(d3.stackOrderReverse);
 
 var parseTime = d3.timeParse("%Y-%m-%dT%H:%M:%S");
+var parseTime17 = d3.timeParse("%Y-%m");
 var formatTime = d3.timeFormat("%Y-%m");
 
+var test
+var tooltip1 = d3.select("body")
+    .append("div")
+    .style("position", "absolute")
+    .style("z-index", "10")
+    .style("visibility", "hidden")
+    .style("color", "#222")
+    .style("padding", "8px")
+    .style("background-color", "white")
+    .style("border-radius", "6px")
+    .style("font", "14 px sans-serif")
+    .text("tooltip1");
 
-    var tooltip1 = d3.select("body")
-        .append("div")
-        .style("position", "absolute")
-        .style("z-index", "10")
-        .style("visibility", "hidden")
-        .style("color", "#222")
-        .style("padding", "8px")
-        .style("background-color", "white")
-        .style("border-radius", "6px")
-        .style("font", "14 px sans-serif")
-        .text("tooltip1");
-
-var data = {
-    resource_id: 'd135e8b4-df7d-4132-b411-a81d0817a5ed' // the resource id
+var res = {
+    resource_id: ['d135e8b4-df7d-4132-b411-a81d0817a5ed', '5624cec4-5574-4505-8225-e14814b84a33'], // the resource id
+    // fields: 'trans_period,no_lt1M_foreign,no_gt1M_foreign,no_gt3M_foreign'
 };
 
+var allres = [];
+var deferreds = [];
 
-$.ajax({
-    url: 'https://catalogue.data.gov.bc.ca/api/action/datastore_search',
-    data: data,
-    dataType: 'json',
-    success: function(data) {
-        // dat = data.result.records;
-        // console.log(data.result.records)
 
-        // for (j=0; j < 5; j++){
-            columns = ['no_mkt_trans','no_foreign']
-        //     type(data.result.records[j],j,columns)
-        // }
-        
-        
+// function getdat(){
+for (i = 0; i < res['resource_id'].length; i++) {
+    // console.log(i)
+    if (i == 0) {
+        var data = {
+            resource_id: res['resource_id'][i],
+            fields: 'trans_period,no_mkt_trans,no_foreign',
+            limit: 4005,
+        };
 
-// d3.csv("provincial-monthly.csv", type, function(error, data) {
-    data = data.result.records;
-    data.forEach(function(d){
+    } else {
+        var data = {
+            resource_id: res['resource_id'][i],
+            fields: 'Year,Month,tot_mkt_trans,no_foreign',
+            limit: 4005,
+        };
+    }
+
+
+    deferreds.push(
+        $.ajax({
+            url: 'https://catalogue.data.gov.bc.ca/api/action/datastore_search',
+            data: data,
+            success: function(data) {
+                return data.result.records
+
+            }
+        })
+    );
+
+};
+
+$.when.apply($, deferreds).then(function() {
+    deferreds.forEach(function(d) {
+        console.log(d.responseJSON.result.records)
+        allres = allres.concat(d.responseJSON.result.records);
+
+    })
+    pop_chart(allres)
+
+})
+
+function pop_chart(recs) {
+
+    recs.forEach(function(d) {
+        if (d.trans_period) {
+            d.trans_period = formatTime(parseTime(d.trans_period))
+            console.log(d.trans_period)
+        } else {
+            d.trans_period = formatTime(parseTime17(d.Year + '-' + d.Month))
+            console.log(Number(d.tot_mkt_trans))
+            d.no_mkt_trans = Number(d.tot_mkt_trans)
+        }
+
+    });
+    console.log(recs)
+    test = recs
+    columns = ['no_mkt_trans', 'no_foreign']
+
+
+    // d3.csv("provincial-monthly.csv", type, function(error, data) {
+    recs.forEach(function(d) {
         d.no_mkt_trans = d.no_mkt_trans - d.no_foreign;
         // console.log(d)
-        d.trans_period = formatTime(parseTime(d.trans_period))
+        // d.trans_period = formatTime(parseTime(d.trans_period))
     })
-    data.sort(function(a, b) {
+    recs.sort(function(a, b) {
         return b.trans_period - a.trans_period;
     });
 
-    x.domain(data.map(function(d) {
+    x.domain(recs.map(function(d) {
         return d.trans_period;
     }));
 
-    y.domain([0, d3.max(data, function(d) {
+    y.domain([0, d3.max(recs, function(d) {
         // console.log(d.no_mkt_trans)
         return d.no_mkt_trans;
     })]).nice();
     // console.log(columns.slice(0))
 
     z.domain(columns.slice(1));
+    console.log(recs)
 
     g.selectAll(".serie")
-        .data(stack.keys(columns.slice(0))(data))
+        .data(stack.keys(columns.slice(0))(recs))
         .enter().append("g")
         .attr("class", "serie")
         .attr("fill", function(d) {
@@ -147,31 +199,31 @@ $.ajax({
         .attr("height", function(d) {
             return y(d[0]) - y(d[1]);
         })
-        .attr("width", x.bandwidth()-20)
+        .attr("width", x.bandwidth() - 20)
         .on("mouseover", function(d) {
             // console.log(d.data)
             d3.select(this)
-                // .style("fill", "orange");
+            // .style("fill", "orange");
 
 
-            tooltip1.text(format(d[1]-d[0]))
+            tooltip1.text(format(d[1] - d[0]))
             tooltip1.style("visibility", "visible");
 
         })
         .on("mousemove", function() {
-            return tooltip1.style("left", (d3.event.pageX ) + "px")
+            return tooltip1.style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY - 50) + "px");
         })
         .on("mouseout", function() {
             d3.select(this)
-                // .style("fill", "steelblue");
+            // .style("fill", "steelblue");
 
             return tooltip1.style("visibility", "hidden");
         });
 
     g.append("g")
         .attr("class", "axis axis--x")
-        .attr("transform", "translate(0," + (screenHeight -50)  + ")")
+        .attr("transform", "translate(0," + (screenHeight - 50) + ")")
         .call(d3.axisBottom(x));
 
     g.append("g")
@@ -206,15 +258,13 @@ $.ajax({
         .attr("dy", ".35em")
         .attr("text-anchor", "end")
         .text(function(d) {
-            if(d == 'no_foreign'){
+            if (d == 'no_foreign') {
                 d = 'Foreign Involvement Transactions'
-            }else{
+            } else {
                 d = 'Non-Foreign Market Transactions'
             }
             return d;
         });
-        }
-    });
-var format = d3.format(",") ;
-
+}
+var format = d3.format(",");
 </script>

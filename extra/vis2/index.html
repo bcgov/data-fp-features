@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<title>Streamgraph</title>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+
 <style>
 .axis--x path {
   display: none;
 }
-    button {
-        position: absolute;
-        left: 10px;
-        top: 10px;
-    }
 
     .tooltip {
         position: absolute;
@@ -25,7 +21,7 @@
     height:95%;
     }
     #chart {
-    width:100%;
+    width:95%;
     height:100%;
     }
     svg {
@@ -33,14 +29,20 @@
     height: 100%;
     }
 
+    form{
+        position: absolute;
+        left: 40px;
+        top: 10px;
+    }
+
 
 </style>
 <!-- <button onclick="transition()">Update</button> -->
 <form>
-  <label><input type="radio" name="mode" value="landings" checked>Landings '000 tonnes</label>
-  <label><input type="radio" name="mode" value="wholesale" > Wholesale $ millions</label>
+  <label><input type="radio" name="mode" value="landings" checked>Landings ('000 tonnes)</label>
+  <label><input type="radio" name="mode" value="wholesale" > Wholesale ($ millions)</label>
 </form>
-<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="//d3js.org/d3.v4.min.js"></script>
 <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 <body>
 <div id="chart" class='chart'>
@@ -129,24 +131,26 @@ $.ajax({
 
 
 
-        var svg = d3.select("svg").style("width", "90%").style("height", "100%");
+        var svg = d3.select("svg").style("width", "100%").style("height", "100%");
 
 
         var margin = {
                 top: 20,
-                right: 20,
+                right: 0,
                 bottom: 30,
-                left: 40
+                left: 20
         },
         screenHeight = parseFloat(d3.select("svg").node().clientHeight || d3.select("svg").node().parentNode.clientHeight);
-        screenWidth = parseFloat(d3.select("svg").node().clientWidth - 40 || d3.select("svg").node().parentNode.clientWidth);
+        screenWidth = parseFloat(d3.select("svg").node().clientWidth|| d3.select("svg").node().parentNode.clientWidth);
+        console.log(screenWidth)
+        g = svg.append("g");
 
-        g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        // g = svg.append("g").attr("transform", "translate(" + margin.right+ "," + margin.top + ")");
 
 
 
         var x = d3.scaleTime()
-            .range([0, screenWidth]);
+            .range([40, screenWidth-0]);
 
             x.domain(d3.extent(data, function(d) {
              return parseTime(d.Year); }))
@@ -164,6 +168,9 @@ $.ajax({
         var yAxis = d3.axisLeft(y).ticks(6, "s");
 
         var z = d3.interpolateCool;
+
+        var color = d3.scaleLinear()
+            .range(["#aad", "#556"]);
 
 
         x.domain(d3.extent(data, function(d) {
@@ -184,13 +191,39 @@ $.ajax({
         var tooltip = d3.select("body").append("div")
             .attr("class", "tooltip");
 
+    var arr = []
+    while(arr.length < 8){
+        var randomnumber = Math.ceil(Math.random()*10)
+
+        if(arr.indexOf(randomnumber) > -1) continue;
+        arr[arr.length] = Math.floor(randomnumber);
+    }
+
+
+    var arr1=[]
+    for (var i = 1; i <= arr.length; i += 1){    
+        x1=arr.splice(i,1)
+        arr1.push(x1[0])
+    }
+    arr2=arr.concat(arr1)
+
+
+
+
+        // x1 = Math.floor(Math.random() * list.length);
+        // list.splice(x1,1)
+        // console.log(list)
+
+
+
         g.selectAll("path")
             .data(series)
             .enter().append("path")
             .attr("d", area)
-            .attr("fill", function(d) {
-
-                return z(Math.random());
+            .attr("fill", function(d,i) {
+                // console.log(z(arr2[i]/10))
+                // console.log(Math.random())
+                return z(arr2[i]/10);
             })
             .on('mouseover', function(d) {
 
@@ -201,7 +234,7 @@ $.ajax({
         
             })
             .on("mousemove", function(d) {
-                console.log(selected)
+                // console.log(selected)
                 mousex = d3.mouse(this);
                 mousex = mousex[0];
                 var invertedx = x.invert(mousex);
@@ -213,7 +246,7 @@ $.ajax({
                     // console.log()
                     if (y.Year == String(invertedx)){
                         tooltip.html(d.key + ": " + y[d.key])
-                        console.log(y[d.key])
+                        // console.log(y[d.key])
                     }
                     })
                 }else{
@@ -221,7 +254,7 @@ $.ajax({
                     // console.log()
                     if (y.Year == String(invertedx)){
                         tooltip.html(d.key + ": " + y[d.key])
-                        console.log(y[d.key])
+                        // console.log(y[d.key])
                     }
                     })
                 }

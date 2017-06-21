@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
@@ -234,12 +235,22 @@
         .style("opacity", 0); 
   
 
-    d3.csv("https://catalogue.data.gov.bc.ca/dataset/1c6256d0-c120-4de1-817b-fb291732f8a4/resource/ed6ad97c-6369-4439-b3d6-9fe3fbcd44b8/download/completionrateminified.csv", function(error, compRate){  
-        
+     
+    var data = {
+    resource_id: 'ed6ad97c-6369-4439-b3d6-9fe3fbcd44b8', // the resource id
+    limit: 11000
+    };
+
+    $.ajax({
+    url: 'https://catalogue.data.gov.bc.ca/api/action/datastore_search',
+    data: data,
+    dataType: 'json',
+    success: function(compRate) {
+    
         var success = 0,
             comp_rate = 0;
 
-        compRate.forEach(function(data){ 
+        compRate.result.records.forEach(function(data){ 
                     chartData.push({
                         year: data.YEAR_6_OF_COHORT, 
                         dist: data.DISTRICT_NUMBER,
@@ -251,8 +262,11 @@
                         cohort: data.COHORT_COUNT
                     })
         })
+        console.log(chartData)
 
-        
+    }
+
+    }).then(function() {     
 
         var sub_pop_map = { "ALL STUDENTS":"All Students",
                             "ABORIGINAL":"Aboriginal",
@@ -379,7 +393,9 @@
                     }
                 }
             }) 
-         
+            
+            finalData1.sort(function(a,b){return a.year.substr(0,4)-b.year.substr(0,4)})
+            finalData2.sort(function(a,b){return a.year.substr(0,4)-b.year.substr(0,4)})
 
             chartData.forEach(function(d){
                 if(d.sub_pop == subpopOneSelect && d.data_level == 'PROVINCE LEVEL'){
