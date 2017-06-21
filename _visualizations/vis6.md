@@ -1,10 +1,10 @@
 ---
 layout: visualization
-title:  'Featured Data: Motor Vehicle Serious Injuries by Month'
+title:  'Featured Map: BC Parks'
 published:   true
 source:
   name: BC Data Catalogue
-  url: https://catalogue.data.gov.bc.ca/dataset/motor-vehicle-serious-injuries-by-month
-iframe_url: https://catalogue.data.gov.bc.ca/dataset/motor-vehicle-serious-injuries-by-month/resource/4e34bda3-03bc-4f6f-b47e-b4d2c47d4f15/view/fb89b7c8-fbac-4c41-9d2a-1e328f8b609a
+  url: https://catalogue.data.gov.bc.ca/dataset/a58738a3-5114-407d-8687-df93dbe8555b
+iframe_url: https://apps.gov.bc.ca/pub/dmf-viewer/?siteid=5859423305973444492&maponly=y
 order: 6
 ---
