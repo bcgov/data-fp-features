@@ -66,7 +66,7 @@ var tooltip1 = d3.select("body")
 var columns = ['no_lt1M_foreign', 'no_gt1M_foreign', 'no_gt3M_foreign'];
 
 var res = {
-    resource_id: ['faa65a3f-61fb-4479-8184-78e2b462115b', 'd3c7feb7-d7b5-4d59-ac73-87dee0fb37df'], // the resource id
+    resource_id: ['d135e8b4-df7d-4132-b411-a81d0817a5ed', '5624cec4-5574-4505-8225-e14814b84a33'], // the resource id
 };
 
 
@@ -95,7 +95,7 @@ for (i = 0; i < res['resource_id'].length; i++) {
 
     deferreds.push(
         $.ajax({
-            url: 'https://cat.data.gov.bc.ca/api/action/datastore_search',
+            url: 'https://catalogue.data.gov.bc.ca/api/action/datastore_search',
             data: data,
             success: function(data) {
                 return data.result.records
