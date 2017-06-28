@@ -12,11 +12,11 @@
   display: none;
 }*/
   body, html {
-    width:98%;
-    height:95%;
-  }
-  #vizcontainer {
     width:100%;
+    height:95%;
+    }
+  #vizcontainer {
+    width:95%;
     height:100%;
   }
 /*  svg {
@@ -44,9 +44,9 @@ text {
 var svg = d3.select("svg").style("width", "100%").style("height", "100%");
 var margin = {
         top: 20,
-        right:40,
-        bottom: 30,
-        left: 40
+        right:0,
+        bottom: 40,
+        left: 20
     },
     screenHeight = parseFloat(d3.select("svg").node().clientHeight || d3.select("svg").node().parentNode.clientHeight);
     screenWidth = parseFloat(d3.select("svg").node().clientWidth || d3.select("svg").node().parentNode.clientWidth);
@@ -55,12 +55,12 @@ var margin = {
 g = svg.append("g").attr("transform", "translate(" + margin.left  + "," + margin.top + ")");
 
 var x = d3.scaleBand()
-    .rangeRound([0, screenWidth])
+    .rangeRound([40, screenWidth])
     .padding(0.1)
     .align(0.1);
 
 var y = d3.scaleLinear()
-    .rangeRound([screenHeight - 50, 40]);
+    .rangeRound([screenHeight - 50, 10]);
 
 var z = d3.scaleOrdinal()
     .range(["#98abc5", "#ff8c00"]);
@@ -226,9 +226,16 @@ function pop_chart(recs) {
         .attr("transform", "translate(0," + (screenHeight - 50) + ")")
         .call(d3.axisBottom(x));
 
+    var ticks = d3.selectAll(".tick text");
+        ticks.attr("class", function(d,i){
+        if(i%2 != 0) d3.select(this).remove();
+    });
+
+
     g.append("g")
         .attr("class", "axis axis--y")
         .call(d3.axisLeft(y).ticks(6, "s"))
+        .attr("transform", "translate(" + 40 + ",0)")
         .append("text")
         .attr("x", 2)
         .attr("y", y(y.ticks(10).pop()))
