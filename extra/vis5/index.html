@@ -153,16 +153,18 @@ function pop_chart(recs) {
     test = recs
     columns = ['no_mkt_trans', 'no_foreign']
 
-
+   recs.sort(function(a, b) {
+        return parseTime(b.trans_period) - parseTime(a.trans_period);
+    });
     // d3.csv("provincial-monthly.csv", type, function(error, data) {
     recs.forEach(function(d) {
         d.no_mkt_trans = d.no_mkt_trans - d.no_foreign;
         // console.log(d)
         // d.trans_period = formatTime(parseTime(d.trans_period))
     })
-    recs.sort(function(a, b) {
-        return b.trans_period - a.trans_period;
-    });
+    // recs.sort(function(a, b) {
+    //     return b.trans_period - a.trans_period;
+    // });
 
     x.domain(recs.map(function(d) {
         return d.trans_period;
