@@ -154,7 +154,7 @@ function pop_chart(recs) {
     columns = ['no_mkt_trans', 'no_foreign']
 
    recs.sort(function(a, b) {
-        return parseTime(b.trans_period) - parseTime(a.trans_period);
+        return parseTime17(a.trans_period) - parseTime17(b.trans_period);
     });
     // d3.csv("provincial-monthly.csv", type, function(error, data) {
     recs.forEach(function(d) {
