@@ -86,7 +86,8 @@ $.ajax({
         // dat = data.result.records;
         data = data.result.records;
         test = data
-        const unique = [...new Set(data.map(item => item.Species))]
+        // const unique = [...new Set(data.map(item => item.Species))]
+        var unique = d3.map(data, function(d) {return d.Species;}).keys()
         n = unique.length
         m = data.length
 
