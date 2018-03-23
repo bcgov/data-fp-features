@@ -33,7 +33,7 @@ text {
 
 
 </style>
-<body>
+<body style="width:95%; height:100%">
 <div id="vizcontainer">
 <svg></svg>
 </div>
@@ -41,12 +41,12 @@ text {
 <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 <script>
-var svg = d3.select("svg").style("width", "100%").style("height", "100%");
+var svg = d3.select("svg").style("width", "110%").style("height", "100%");
 var margin = {
         top: 20,
         right:0,
         bottom: 40,
-        left: 20
+        left: 10
     },
     screenHeight = parseFloat(d3.select("svg").node().clientHeight || d3.select("svg").node().parentNode.clientHeight);
     screenWidth = parseFloat(d3.select("svg").node().clientWidth || d3.select("svg").node().parentNode.clientWidth);
@@ -86,7 +86,15 @@ var tooltip1 = d3.select("body")
     .text("tooltip1");
 
 var res = {
-    resource_id: ['d135e8b4-df7d-4132-b411-a81d0817a5ed', '5624cec4-5574-4505-8225-e14814b84a33'], // the resource id
+    resource_id: [
+      /* from 'Property Transfer Tax Data 2016' privincial-monthly */
+      '099288eb-4a09-43eb-8dc2-72586808f70f',
+
+      /* from 'Property Transfer Tax Data 2017' privincial-monthly */
+      '5624cec4-5574-4505-8225-e14814b84a33',
+
+      /* from 'Property Transfer Tax Data 2018' privincial-monthly */
+      '54d98b2e-9aa7-4247-8b2b-be193bcb37ed'], // the resource id
     // fields: 'trans_period,no_lt1M_foreign,no_gt1M_foreign,no_gt3M_foreign'
 };
 
@@ -104,10 +112,17 @@ for (i = 0; i < res['resource_id'].length; i++) {
             limit: 4005,
         };
 
-    } else {
+    } else if (i == 1){
         var data = {
             resource_id: res['resource_id'][i],
             fields: 'Year,Month,tot_mkt_trans,no_foreign',
+            limit: 4005,
+        };
+
+    } else if (i == 2){
+        var data = {
+            resource_id: res['resource_id'][i],
+            fields: 'Year,Month,tot_mkt_trans,n_foreign_tran',
             limit: 4005,
         };
     }
@@ -146,6 +161,9 @@ function pop_chart(recs) {
             d.trans_period = formatTime(parseTime17(d.Year + '-' + d.Month))
             console.log(Number(d.tot_mkt_trans))
             d.no_mkt_trans = Number(d.tot_mkt_trans)
+        }
+        if (d.n_foreign_tran) {
+            d.no_foreign = Number(d.n_foreign_tran)
         }
 
     });

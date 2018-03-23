@@ -66,7 +66,16 @@ var tooltip1 = d3.select("body")
 var columns = ['no_lt1M_foreign', 'no_gt1M_foreign', 'no_gt3M_foreign'];
 
 var res = {
-    resource_id: ['d135e8b4-df7d-4132-b411-a81d0817a5ed', '5624cec4-5574-4505-8225-e14814b84a33'], // the resource id
+    resource_id: [
+      /* from 'Property Transfer Tax Data 2016' privincial-monthly */
+      '099288eb-4a09-43eb-8dc2-72586808f70f',
+
+      /* from 'Property Transfer Tax Data 2017' privincial-monthly */
+      '5624cec4-5574-4505-8225-e14814b84a33',
+
+      /* from 'Property Transfer Tax Data 2018' privincial-monthly */
+      '54d98b2e-9aa7-4247-8b2b-be193bcb37ed'], // the resource id
+    // fields: 'trans_period,no_lt1M_foreign,no_gt1M_foreign,no_gt3M_foreign'
 };
 
 var allres = [];
@@ -83,10 +92,17 @@ for (i = 0; i < res['resource_id'].length; i++) {
             limit: 4005,
         };
 
-    } else {
+    } else if (i == 1){
         var data = {
             resource_id: res['resource_id'][i],
             fields: 'Year,Month,no_lt1M_foreign,no_gt1M_foreign,no_gt3M_foreign',
+            limit: 4005,
+        };
+
+    } else if (i == 2){
+        var data = {
+            resource_id: res['resource_id'][i],
+            fields: 'Year,Month,n_lt1M_foreign_res,n_gt1M_foreign_res,n_gt3M_foreign_res',
             limit: 4005,
         };
     }
@@ -127,6 +143,16 @@ function pop_chart(recs) {
             d.trans_period = formatTime(parseTime17(d.Year + '-' + d.Month))
         }
 
+        if (d.n_lt1M_foreign_res){
+            d.no_lt1M_foreign = Number(d.n_lt1M_foreign_res)
+        }
+        if (d.n_gt1M_foreign_res){
+            d.no_gt1M_foreign = Number(d.n_gt1M_foreign_res)
+        }
+        if (d.n_gt3M_foreign_res){
+            d.no_gt3M_foreign = Number(d.n_gt3M_foreign_res)
+        }
+
         d.vals = valueClass.map(function(name) {
             return {
                 name: name,
@@ -155,7 +181,7 @@ function pop_chart(recs) {
             top: 20,
             right: 0,
             bottom: 40,
-            left: 20
+            left: 10
         },
         screenHeight = parseFloat(d3.select("svg").node().clientHeight || d3.select("svg").node().parentNode.clientHeight);
     screenWidth = parseFloat(d3.select("svg").node().clientWidth|| d3.select("svg").node().parentNode.clientWidth);
