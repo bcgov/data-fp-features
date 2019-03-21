@@ -105,7 +105,7 @@ $.ajax({
                 Year: d.key
             }
             d.values.forEach(function(v) {
-                obj[v['Species']] = +v["Landings ('000 tonnes)"];
+                obj[v['Species']] = +v["Landings_1000_tonnes"];
             })
             return obj
         });
@@ -115,11 +115,11 @@ $.ajax({
                 Year: d.key
             }
             d.values.forEach(function(v) {
-                obj[v['Species']] = +v["Wholesale Values ($millions)"];
+                obj[v['Species']] = +v["Wholesale_Values_1millions"];
             })
             return obj
         });
-    
+
 
         var stack = d3.stack()
             .keys(unique)
@@ -202,7 +202,7 @@ $.ajax({
 
 
     var arr1=[]
-    for (var i = 1; i <= arr.length; i += 1){    
+    for (var i = 1; i <= arr.length; i += 1){
         x1=arr.splice(i,1)
         arr1.push(x1[0])
     }
@@ -230,9 +230,9 @@ $.ajax({
 
                 // d3.select(this).style('fill', d3.rgb(d3.select(this).style("fill")).brighter());
                 // d3.select("#major").text(d.key);
-                
+
                 tooltip.style("visibility", "visible");
-        
+
             })
             .on("mousemove", function(d) {
                 // console.log(selected)
@@ -259,7 +259,7 @@ $.ajax({
                     }
                     })
                 }
-                
+
 
 
                 return tooltip.style("left", (d3.event.pageX) + "px")
@@ -296,7 +296,7 @@ $.ajax({
         //     .text(function(d){
         //         console.log(d)
         //     });
-           
+
 
         function stackMin(layer) {
             return d3.min(layer, function(d) {

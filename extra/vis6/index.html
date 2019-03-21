@@ -372,7 +372,7 @@ ticks.attr("class", function(d,i){
     }
 
     var legend = svg.selectAll(".legend")
-        .data(valueClass.slice().reverse())
+        .data(valueClass.slice())
         .enter().append("g")
         .attr("class", "legend")
         .attr("transform", function(d, i) {
@@ -393,11 +393,11 @@ ticks.attr("class", function(d,i){
         .attr("dy", ".35em")
         .style("text-anchor", "end")
         .text(function(d) {
-            if (d == 'no_gt3M_foreign') {
+            if (d === 'no_gt3M_foreign' ) {
                 d = 'Over $3 million '
-            } else if (d == 'no_gt1M_foreign') {
+            } else if (d === 'no_gt1M_foreign') {
                 d = '$1 million - $3 million '
-            } else {
+            } else if (d === 'no_lt1M_foreign') {
                 d = 'Under $1 million'
             }
             return d;
