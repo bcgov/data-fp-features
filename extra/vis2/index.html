@@ -115,7 +115,7 @@ $.ajax({
                 Year: d.key
             }
             d.values.forEach(function(v) {
-                obj[v['Species']] = +v["Wholesale_Values_1millions"];
+                obj[v['Species']] = +v["Wholesale_Values_millions"];
             })
             return obj
         });
