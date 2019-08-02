@@ -4,7 +4,7 @@ title:  'Featured Data: Monthly Property Transactions'
 published:   true
 source:
   name: BC Data Catalogue
-  url: https://catalogue.data.gov.bc.ca/dataset/9c9b8d35-d59b-436a-a350-f581ea71a798
+  url: https://catalogue.data.gov.bc.ca/dataset?q=%22property+transfer+tax+data%22&download_audience=Public&sort=score+desc%2C+record_publish_date+desc
 iframe_url: "../extra/vis5/"
 order: 1
 ---
