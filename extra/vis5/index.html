@@ -87,15 +87,12 @@ var tooltip1 = d3.select("body")
 
 var res = {
     resource_id: [
-      /* from 'Property Transfer Tax Data 2016' privincial-monthly */
-      '099288eb-4a09-43eb-8dc2-72586808f70f',
-
-      /* from 'Property Transfer Tax Data 2017' privincial-monthly */
+      /* from 'Property Transfer Tax Data 2017' provincial-monthly */
       '5624cec4-5574-4505-8225-e14814b84a33',
-
-      /* from 'Property Transfer Tax Data 2018' privincial-monthly */
-      '54d98b2e-9aa7-4247-8b2b-be193bcb37ed'], // the resource id
-    // fields: 'trans_period,no_lt1M_foreign,no_gt1M_foreign,no_gt3M_foreign'
+      /* from 'Property Transfer Tax Data 2018' provincial-monthly */
+      '54d98b2e-9aa7-4247-8b2b-be193bcb37ed',
+      /* from 'Property Transfer Tax Data 2019' provincial-monthly */
+      '622b9cf1-6278-419d-94a1-986da85b27fe'], // the resource id
 };
 
 var allres = [];
@@ -108,14 +105,14 @@ for (i = 0; i < res['resource_id'].length; i++) {
     if (i == 0) {
         var data = {
             resource_id: res['resource_id'][i],
-            fields: 'trans_period,no_mkt_trans,no_foreign',
+            fields: 'Year,Month,tot_mkt_trans,no_foreign',
             limit: 4005,
         };
 
     } else if (i == 1){
         var data = {
             resource_id: res['resource_id'][i],
-            fields: 'Year,Month,tot_mkt_trans,no_foreign',
+            fields: 'Year,Month,tot_mkt_trans,n_foreign_tran',
             limit: 4005,
         };
 
