@@ -1,7 +1,7 @@
 ---
 layout: visualization
 title:  'Featured Map: BC Parks'
-published:   true
+published:   false
 source:
   name: BC Data Catalogue
   url: https://catalogue.data.gov.bc.ca/dataset/a58738a3-5114-407d-8687-df93dbe8555b
